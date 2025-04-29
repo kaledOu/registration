@@ -155,6 +155,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@Value("${mosip.regproc.uin.generator.trim-whitespaces.simpleType-value:false}")
 	private boolean trimWhitespaces;
 
+	@Value("#{${registration.processor.additional-process.category-mapping:{:}}}")
+	private Map<String,String> additionalProcessCategoryMapping;
+
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -320,8 +323,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						idResponseDTO = deactivateUin(registrationId, uinField, object, demographicIdentity,
 								description);
 					} else if (RegistrationType.UPDATE.toString().equalsIgnoreCase(object.getReg_type())
-							|| (RegistrationType.RES_UPDATE.toString()
-									.equalsIgnoreCase(object.getReg_type()))) {
+							|| (RegistrationType.RES_UPDATE.toString().equalsIgnoreCase(object.getReg_type()))
+							|| (RegistrationType.UPDATE.toString().equalsIgnoreCase(utility.getInternalProcess(additionalProcessCategoryMapping, object.getReg_type())))) {
 						isTransactionSuccessful = uinUpdate(registrationId, registrationStatusDto.getRegistrationType(), uinField, object, demographicIdentity,
 								description);
 					}
@@ -463,35 +466,48 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		return object;
 	}
 
-	private void loadDemographicIdentity(Map<String, String> fieldMap, JSONObject demographicIdentity) throws IOException, JSONException {
-		for (Map.Entry e : fieldMap.entrySet()) {
-			if (e.getValue() != null) {
-				String value = e.getValue().toString();
-				if (value != null) {
-					Object json = new JSONTokener(value).nextValue();
-					if (json instanceof org.json.JSONObject) {
-						HashMap<String, Object> hashMap = objectMapper.readValue(value, HashMap.class);
-						demographicIdentity.putIfAbsent(e.getKey(), hashMap);
-					}
-					else if (json instanceof JSONArray) {
-						List jsonList = new ArrayList<>();
-						JSONArray jsonArray = new JSONArray(value);
-						for (int i = 0; i < jsonArray.length(); i++) {
-							Object obj = jsonArray.get(i);
-							HashMap<String, Object> hashMap = objectMapper.readValue(obj.toString(), HashMap.class);
-							if(trimWhitespaces && hashMap.get("value") instanceof String) {
-								hashMap.put("value",((String)hashMap.get("value")).trim());
-							}
-							jsonList.add(hashMap);
-						}
-						demographicIdentity.putIfAbsent(e.getKey(), jsonList);
-					} else
-						demographicIdentity.putIfAbsent(e.getKey(), value);
-				} else
-					demographicIdentity.putIfAbsent(e.getKey(), value);
-			}
-		}
-	}
+    private void loadDemographicIdentity(Map<String, String> fieldMap, JSONObject demographicIdentity) throws IOException, JSONException {
+        for (Map.Entry e : fieldMap.entrySet()) {
+            if (e.getValue() == null) {
+                continue;
+            }
+
+            String value = e.getValue().toString();
+            if (value == null) {
+                demographicIdentity.putIfAbsent(e.getKey(), value);
+                continue;
+            }
+
+            Object json = new JSONTokener(value).nextValue();
+            if (json instanceof org.json.JSONObject) {
+                HashMap<String, Object> hashMap = objectMapper.readValue(value, HashMap.class);
+                demographicIdentity.putIfAbsent(e.getKey(), hashMap);
+                continue;
+            }
+
+            if (json instanceof JSONArray) {
+                List jsonList = new ArrayList<>();
+                JSONArray jsonArray = new JSONArray(value);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    Object obj = jsonArray.get(i);
+                    if (obj instanceof String) {
+                        jsonList.add(obj);
+                    } else {
+                        HashMap<String, Object> hashMap = objectMapper.readValue(obj.toString(), HashMap.class);
+
+                        if (trimWhitespaces && hashMap.containsKey("value") && hashMap.get("value") instanceof String) {
+                            hashMap.put("value", ((String) hashMap.get("value")).trim());
+                        }
+                        jsonList.add(hashMap);
+                    }
+                }
+                demographicIdentity.putIfAbsent(e.getKey(), jsonList);
+            }
+            else {
+                demographicIdentity.putIfAbsent(e.getKey(), value);
+            }
+        }
+    }
 
 	/**
 	 * Send id repo with uin.
