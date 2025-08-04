@@ -3,6 +3,6 @@ updates:
   - package-ecosystem: "maven"
     directory: "/registration-processor" 
     schedule:
-      interval: "daily"
+      interval: "daily" 
     target-branch: "develop"
     open-pull-requests-limit: 50
