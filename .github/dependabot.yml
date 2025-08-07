@@ -1,8 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: "maven"
-    directory: "/registration-processor" 
+    directory: "/registration-processor/mosip-stage-executor" 
     schedule:
       interval: "daily"
-    target-branch: "MOSIP-18889-draft"
+    target-branch: "develop"
     open-pull-requests-limit: 50
