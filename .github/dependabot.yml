@@ -4,5 +4,5 @@ updates:
     directory: "/registration-processor/mosip-stage-executor" 
     schedule:
       interval: "daily"
-    target-branch: "develop"
+    target-branch: "MOSIP-18889-draft"
     open-pull-requests-limit: 50
