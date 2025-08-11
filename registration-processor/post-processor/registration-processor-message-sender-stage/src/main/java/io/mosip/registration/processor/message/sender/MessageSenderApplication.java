@@ -4,6 +4,10 @@ import io.mosip.registration.processor.message.sender.stage.MessageSenderStage;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 /**
  * The Class MessageSenderApplication.
  *
@@ -29,9 +33,13 @@ public class MessageSenderApplication {
                 "io.mosip.registration.processor.packet.manager.config",
                 "io.mosip.registration.processor.core.kernel.beans",
                 "io.mosip.kernel.packetmanager.config");
+
+        ctx.refresh();
+        LogManager.getLogManager().reset();
+        Logger rootLogger = Logger.getLogger("");
+        rootLogger.setLevel(Level.FINEST);
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-        ctx.refresh();
         MessageSenderStage messageSenderStage = ctx.getBean(MessageSenderStage.class);
         messageSenderStage.deployVerticle();
 
