@@ -18,6 +18,7 @@ public class SecurezoneNotificationApplication {
                 "io.mosip.registration.processor.packet.manager.config",
                 "io.mosip.registration.processor.status.config", "io.mosip.registration.processor.rest.client.config",
                 "io.mosip.registration.processor.core.kernel.beans");
+        System.out.println("branch ============================> MOSIP-18889-draft");
         configApplicationContext.refresh();
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
