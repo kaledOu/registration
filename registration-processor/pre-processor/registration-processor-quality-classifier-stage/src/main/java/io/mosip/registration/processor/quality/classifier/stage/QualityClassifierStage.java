@@ -207,14 +207,9 @@ public class QualityClassifierStage extends MosipVerticleAPIManager {
      * Deploy verticle.
      */
     public void deployVerticle() {
-//		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
-//		this.consumeAndSend(mosipEventBus, MessageBusAddress.QUALITY_CLASSIFIER_BUS_IN,
-//				MessageBusAddress.QUALITY_CLASSIFIER_BUS_OUT, messageExpiryTimeLimit);
-        MessageDTO ms = new MessageDTO();
-        ms.setRid("10058100431024120250627053445");
-        ms.setReg_type("NEW");
-        ms.setWorkflowInstanceId("c124319f-c7e9-45ea-a1a0-78b2cf31efe8");
-        this.process(ms);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.QUALITY_CLASSIFIER_BUS_IN,
+				MessageBusAddress.QUALITY_CLASSIFIER_BUS_OUT, messageExpiryTimeLimit);
     }
 
     @Override
@@ -514,3 +509,4 @@ public class QualityClassifierStage extends MosipVerticleAPIManager {
         }
     }
 }
+
