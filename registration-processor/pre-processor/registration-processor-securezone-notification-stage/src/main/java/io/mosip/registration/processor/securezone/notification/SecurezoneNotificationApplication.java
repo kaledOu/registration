@@ -4,9 +4,7 @@ import io.mosip.registration.processor.securezone.notification.stage.SecurezoneN
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 public class SecurezoneNotificationApplication {
 
@@ -16,6 +14,9 @@ public class SecurezoneNotificationApplication {
      * @param args
      */
     public static void main(String[] args) {
+        LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
         AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
         configApplicationContext.scan("io.mosip.registration.processor.core.config",
                 "io.mosip.registration.processor.securezone.notification.config",
@@ -23,11 +24,7 @@ public class SecurezoneNotificationApplication {
                 "io.mosip.registration.processor.status.config", "io.mosip.registration.processor.rest.client.config",
                 "io.mosip.registration.processor.core.kernel.beans");
         configApplicationContext.refresh();
-        LogManager.getLogManager().reset();
-        Logger rootLogger = Logger.getLogger("");
-        rootLogger.setLevel(Level.FINEST);
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
+
         SecurezoneNotificationStage notificationStage = configApplicationContext.getBean(SecurezoneNotificationStage.class);
 
         notificationStage.deployVerticle();

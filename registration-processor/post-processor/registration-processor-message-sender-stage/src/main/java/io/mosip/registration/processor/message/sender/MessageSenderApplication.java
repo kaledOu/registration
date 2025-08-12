@@ -4,9 +4,7 @@ import io.mosip.registration.processor.message.sender.stage.MessageSenderStage;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * The Class MessageSenderApplication.
@@ -22,7 +20,9 @@ public class MessageSenderApplication {
      */
     @SuppressWarnings("resource")
     public static void main(String[] args) {
-
+        LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.scan("io.mosip.registration.processor.core.config",
                 "io.mosip.registration.processor.stages.uingenerator.config",
@@ -35,11 +35,6 @@ public class MessageSenderApplication {
                 "io.mosip.kernel.packetmanager.config");
 
         ctx.refresh();
-        LogManager.getLogManager().reset();
-        Logger rootLogger = Logger.getLogger("");
-        rootLogger.setLevel(Level.FINEST);
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
         MessageSenderStage messageSenderStage = ctx.getBean(MessageSenderStage.class);
         messageSenderStage.deployVerticle();
 
