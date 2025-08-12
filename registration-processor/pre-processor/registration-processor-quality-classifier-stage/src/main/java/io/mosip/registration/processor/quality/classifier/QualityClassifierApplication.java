@@ -30,7 +30,17 @@ public class QualityClassifierApplication {
                 "io.mosip.registration.processor.core.kernel.beans",
                 "io.mosip.registration.processor.packet.manager.config");
         ctx.refresh();
+        removeBraveConsoleHandlers();
         QualityClassifierStage qualityClassifierStage = ctx.getBean(QualityClassifierStage.class);
         qualityClassifierStage.deployVerticle();
+    }
+
+    private static void removeBraveConsoleHandlers() {
+        java.util.logging.Logger braveLogger =
+                java.util.logging.Logger.getLogger("brave.Tracing");
+        braveLogger.setUseParentHandlers(true); // let it inherit bridged root handlers
+        for (java.util.logging.Handler handler : braveLogger.getHandlers()) {
+            braveLogger.removeHandler(handler);
+        }
     }
 }

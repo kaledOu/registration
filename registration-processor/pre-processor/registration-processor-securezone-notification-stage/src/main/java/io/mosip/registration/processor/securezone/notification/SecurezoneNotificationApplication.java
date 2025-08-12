@@ -24,9 +24,18 @@ public class SecurezoneNotificationApplication {
                 "io.mosip.registration.processor.status.config", "io.mosip.registration.processor.rest.client.config",
                 "io.mosip.registration.processor.core.kernel.beans");
         configApplicationContext.refresh();
-
+        removeBraveConsoleHandlers();
         SecurezoneNotificationStage notificationStage = configApplicationContext.getBean(SecurezoneNotificationStage.class);
 
         notificationStage.deployVerticle();
+    }
+
+    private static void removeBraveConsoleHandlers() {
+        java.util.logging.Logger braveLogger =
+                java.util.logging.Logger.getLogger("brave.Tracing");
+        braveLogger.setUseParentHandlers(true); // let it inherit bridged root handlers
+        for (java.util.logging.Handler handler : braveLogger.getHandlers()) {
+            braveLogger.removeHandler(handler);
+        }
     }
 }
