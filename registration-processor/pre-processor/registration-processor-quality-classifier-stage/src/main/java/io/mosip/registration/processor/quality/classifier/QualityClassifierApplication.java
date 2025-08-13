@@ -33,21 +33,29 @@ public class QualityClassifierApplication {
         qualityClassifierStage.deployVerticle();
     }
 
-    private static void removeBraveConsoleHandlers() {
-        java.util.logging.Logger braveLogger =
-                java.util.logging.Logger.getLogger("brave.Tracing");
-        // Remove any direct handlers Brave attached
-        for (java.util.logging.Handler handler : braveLogger.getHandlers()) {
-            braveLogger.removeHandler(handler);
-        }
-        // Prevent JUL default output
-        braveLogger.setUseParentHandlers(false);
-    }
-
     private static void configureJulToSlf4j() {
+        // Remove all existing handlers from root JUL logger
+        java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
+        for (java.util.logging.Handler handler : rootLogger.getHandlers()) {
+            rootLogger.removeHandler(handler);
+        }
+
+        // Reset JUL configuration and install SLF4J bridge
         LogManager.getLogManager().reset();
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
+    }
+
+    private static void removeBraveConsoleHandlers() {
+        java.util.logging.Logger braveLogger =
+                java.util.logging.Logger.getLogger("brave.Tracing");
+
+        for (java.util.logging.Handler handler : braveLogger.getHandlers()) {
+            braveLogger.removeHandler(handler);
+        }
+
+        // Don't send Brave logs to JUL's parent handlers
+        braveLogger.setUseParentHandlers(false);
     }
 
 }
