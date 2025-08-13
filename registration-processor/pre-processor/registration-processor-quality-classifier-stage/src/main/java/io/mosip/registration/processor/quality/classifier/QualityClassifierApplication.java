@@ -19,9 +19,8 @@ public class QualityClassifierApplication {
      * @param args the arguments
      */
     public static void main(String[] args) {
-        LogManager.getLogManager().reset();
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
+        configureJulToSlf4j();
+        removeBraveConsoleHandlers();
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.scan("io.mosip.registration.processor.quality.classifier.config",
                 "io.mosip.kernel.packetmanager.config",
@@ -30,7 +29,6 @@ public class QualityClassifierApplication {
                 "io.mosip.registration.processor.core.kernel.beans",
                 "io.mosip.registration.processor.packet.manager.config");
         ctx.refresh();
-        removeBraveConsoleHandlers();
         QualityClassifierStage qualityClassifierStage = ctx.getBean(QualityClassifierStage.class);
         qualityClassifierStage.deployVerticle();
     }
@@ -38,9 +36,18 @@ public class QualityClassifierApplication {
     private static void removeBraveConsoleHandlers() {
         java.util.logging.Logger braveLogger =
                 java.util.logging.Logger.getLogger("brave.Tracing");
-        braveLogger.setUseParentHandlers(true); // let it inherit bridged root handlers
+        // Remove any direct handlers Brave attached
         for (java.util.logging.Handler handler : braveLogger.getHandlers()) {
             braveLogger.removeHandler(handler);
         }
+        // Prevent JUL default output
+        braveLogger.setUseParentHandlers(false);
     }
+
+    private static void configureJulToSlf4j() {
+        LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+    }
+
 }
