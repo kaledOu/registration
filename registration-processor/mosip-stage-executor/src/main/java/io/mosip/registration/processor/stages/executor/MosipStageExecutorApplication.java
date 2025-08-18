@@ -10,12 +10,15 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.MutablePropertySources;
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 
 import io.mosip.registration.processor.stages.executor.config.StagesConfig;
 import io.mosip.registration.processor.stages.executor.util.StageClassesUtil;
+import java.util.logging.LogManager;
 
 /**
  * The Class MosipStageExecutorApplication.
@@ -108,4 +111,5 @@ public class MosipStageExecutorApplication {
         braveLogger.setUseParentHandlers(false);
     }
 }
+
 
