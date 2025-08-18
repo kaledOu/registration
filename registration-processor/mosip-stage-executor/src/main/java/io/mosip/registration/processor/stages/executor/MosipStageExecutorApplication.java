@@ -32,6 +32,8 @@ public class MosipStageExecutorApplication {
 	 */
 	public static void main(String[] args) {
 		regProcLogger.info("Starting mosip-stage-executor...");
+		 configureJulToSlf4j();
+        removeBraveConsoleHandlers();
 		//This context is closed after deploying the stages
 		try (AnnotationConfigApplicationContext stageInfoApplicationContext = new AnnotationConfigApplicationContext(
 				new Class<?>[] { StagesConfig.class });) {
@@ -81,4 +83,29 @@ public class MosipStageExecutorApplication {
 			}
 		}
 	}
+	   private static void configureJulToSlf4j() {
+        // Remove all existing handlers from root JUL logger
+        java.util.logging.Logger rootLogger = LogManager.getLogManager().getLogger("");
+        for (java.util.logging.Handler handler : rootLogger.getHandlers()) {
+            rootLogger.removeHandler(handler);
+        }
+
+        // Reset JUL configuration and install SLF4J bridge
+        LogManager.getLogManager().reset();
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+    }
+
+    private static void removeBraveConsoleHandlers() {
+        java.util.logging.Logger braveLogger =
+                java.util.logging.Logger.getLogger("brave.Tracing");
+
+        for (java.util.logging.Handler handler : braveLogger.getHandlers()) {
+            braveLogger.removeHandler(handler);
+        }
+
+        // Don't send Brave logs to JUL's parent handlers
+        braveLogger.setUseParentHandlers(false);
+    }
 }
+
