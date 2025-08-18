@@ -35,8 +35,9 @@ public class MosipStageExecutorApplication {
 	 */
 	public static void main(String[] args) {
 		regProcLogger.info("Starting mosip-stage-executor...");
-		 configureJulToSlf4j();
-        removeBraveConsoleHandlers();
+		LogManager.getLogManager().reset();
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
 		//This context is closed after deploying the stages
 		try (AnnotationConfigApplicationContext stageInfoApplicationContext = new AnnotationConfigApplicationContext(
 				new Class<?>[] { StagesConfig.class });) {
@@ -111,5 +112,6 @@ public class MosipStageExecutorApplication {
         braveLogger.setUseParentHandlers(false);
     }
 }
+
 
 
