@@ -23,7 +23,9 @@
     </logger>
 
     <!-- Optional: keep Tracer clean  -->
-    <logger name="brave.Tracer" level="INFO"/>
+    <logger name="brave.Tracer" level="INFO" additivity="false">
+        <appender-ref ref="BRAVE"/>
+    </logger>
 
     <!-- Root app logs -->
     <root level="INFO">
