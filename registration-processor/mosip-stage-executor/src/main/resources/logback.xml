@@ -12,7 +12,7 @@
 
     <!-- Disable Brave’s own JSON logs to avoid duplication -->
     <logger name="brave.Tracer" level="OFF"/>
-    <logger name="brave.Tracing$LogSpanHandler" level="OFF"/>
+    <logger name="brave.Tracing$LogSpanHandler" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
