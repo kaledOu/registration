@@ -1,19 +1,31 @@
 <configuration>
     <springProperty scope="context" name="appName" source="spring.application.name"/>
 
+    <!-- Default logs: JSON structured -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <!-- Include MDC values (traceId, spanId, etc.) as flat JSON fields -->
             <includeMdcKeyName>traceId</includeMdcKeyName>
             <includeMdcKeyName>spanId</includeMdcKeyName>
             <includeMdcKeyName>parentId</includeMdcKeyName>
         </encoder>
     </appender>
 
-    <!-- Disable Brave’s own JSON logs to avoid duplication -->
-    <logger name="brave.Tracer" level="OFF"/>
-    <logger name="brave.Tracing$LogSpanHandler" level="INFO"/>
+    <!-- Brave logs: print raw JSON as-is -->
+    <appender name="BRAVE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
 
+    <!-- Send Brave span logs only to BRAVE -->
+    <logger name="brave.Tracing$LogSpanHandler" level="INFO" additivity="false">
+        <appender-ref ref="BRAVE"/>
+    </logger>
+
+    <!-- Optional: keep Tracer clean 
+    <logger name="brave.Tracer" level="WARN"/>-->
+
+    <!-- Root app logs -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
