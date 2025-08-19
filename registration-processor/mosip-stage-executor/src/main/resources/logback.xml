@@ -23,7 +23,7 @@
     </logger>
 
     <!-- Optional: keep Tracer clean  -->
-    <logger name="brave.Tracer" level="WARN"/>
+    <logger name="brave.Tracer" level="INFO"/>
 
     <!-- Root app logs -->
     <root level="INFO">
