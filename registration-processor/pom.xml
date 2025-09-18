@@ -112,7 +112,7 @@
 		<!-- jsch.version -->
 		<jsch.version>0.1.55</jsch.version>
 		
-		<zipkin.version>3.3.0</zipkin.version>
+		<zipkin.version>3.5.1</zipkin.version>
 		<activemq.client.version>6.1.2</activemq.client.version>
 
 		<!-- local -->
