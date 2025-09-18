@@ -63,7 +63,7 @@
 				which is used to instantiate Ceylon verticles -->
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-lang-ceylon</artifactId>
-			<version>3.4.1</version>
+			<version>3.5.4</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.ceylon-lang</groupId>
