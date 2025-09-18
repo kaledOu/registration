@@ -145,7 +145,7 @@
 					<plugin>
 						<groupId>org.springdoc</groupId>
 						<artifactId>springdoc-openapi-maven-plugin</artifactId>
-						<version>0.2</version>
+						<version>1.5</version>
 						<executions>
 							<execution>
 								<id>integration-test</id>
