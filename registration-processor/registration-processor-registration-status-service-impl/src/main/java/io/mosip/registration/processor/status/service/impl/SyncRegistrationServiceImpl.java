@@ -337,6 +337,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 						syncResponseFailureDto
 								.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_REGISTRATIONID_TIMESTAMP.getCode());
 					}
+					regProcLogger.info("count failure pucket in sync pucket ");
 					syncResponseList.add(syncResponseFailureDto);
 				}
 			}
