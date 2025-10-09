@@ -531,6 +531,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		SyncRegistrationEntity existingSyncRegistration = findByPacketId(registrationDto.getPacketId());
 		SyncRegistrationEntity syncRegistration;
 		if (existingSyncRegistration != null) {
+
 			// update sync registration record
 			syncRegistration = convertDtoToEntity(registrationDto, referenceId, timeStamp);
 			syncRegistration.setWorkflowInstanceId(existingSyncRegistration.getWorkflowInstanceId());
@@ -538,9 +539,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			if(syncRegistration.getCreateDateTime()!=null) {
 				syncRegistration.setRegistrationDate(syncRegistration.getCreateDateTime().toLocalDate());
 			}
-			syncRegistrationDao.update(syncRegistration);
+			syncRegistrationDao.update(syncRegistration);    //update  in registration_list
 			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-
+			regProcLogger.info("*********** update  in registration_list in sync , rid = {} *********",registrationDto.getRegistrationId());
 			eventId = EventId.RPR_402.toString();
 		} else {
 			// first time sync registration
@@ -551,14 +552,16 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			if(syncRegistration.getCreateDateTime()!=null) {
 				syncRegistration.setRegistrationDate(syncRegistration.getCreateDateTime().toLocalDate());
 			}
-			syncRegistrationDao.save(syncRegistration);
+			syncRegistrationDao.save(syncRegistration); //add in registration_list
+
 			syncResponseDto.setRegistrationId(registrationDto.getRegistrationId());
-			
+			regProcLogger.info("*********** add  in registration_list  in sync  , rid = {} *********",registrationDto.getRegistrationId());
 			eventId = EventId.RPR_407.toString();
 		}
 		syncResponseDto.setStatus(ResponseStatusCode.SUCCESS.toString());
 		syncResponseList.add(syncResponseDto);
 		saveAnonymousProfile( registrationDto,  referenceId,  timeStamp);
+		regProcLogger.info("*********** add  in AnonymousProfile when update  in sync , rid = {} *********", registrationDto.getRegistrationId());
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationDto.getRegistrationId(), "SyncRegistrationServiceImpl::validateRegId()::exit");
 		return syncResponseList;

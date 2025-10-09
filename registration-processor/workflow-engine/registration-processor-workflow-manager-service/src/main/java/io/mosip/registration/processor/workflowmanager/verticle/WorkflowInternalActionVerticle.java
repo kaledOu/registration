@@ -281,7 +281,7 @@ public class WorkflowInternalActionVerticle extends MosipVerticleAPIManager {
 		json = anonymousProfileService.buildJsonStringFromPacketInfo(biometricRecord, fieldMap, fieldTypeMap,
 				metaInfoMap, registrationStatusDto.getStatusCode(), registrationStatusDto.getRegistrationStageName());
 		anonymousProfileService.saveAnonymousProfile(registrationId, registrationStatusDto.getRegistrationStageName(), json);
-		
+		regProcLogger.info("*********** add  in AnonymousProfile  in WF   , rid = {} *********", registrationId);
 		this.send(this.mosipEventBus, new MessageBusAddress(anonymousProfileBusAddress), workflowInternalActionDTO);
 
 		regProcLogger.info("processAnonymousProfile ended for registration id {}", registrationId);
