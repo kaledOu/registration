@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-web-client</artifactId>
-			<version>3.6.2</version>
+			<version>5.0.6</version>
 			<!-- Excluded to avoid conflict with existing vertx.version -->
 			<exclusions>
 				<exclusion>
